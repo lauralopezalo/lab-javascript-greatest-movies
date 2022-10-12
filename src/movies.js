@@ -3,12 +3,12 @@ const moviesArray = require("./data");
 // Iteration 1: All directors? - Get the array of all directors.-----------------------------------------------------------------------------------------------------------------------------------------
 // _Bonus_: It seems some of the directors had directed multiple movies so they will pop up multiple times in the array of directors.
 // How could you "clean" a bit this array and make it unified (without duplicates)?
-            // Diego's solution:----------------------------------------------------------------------------
-            //  function getAllDirectors(moviesArray) {
-            //      const rawList = moviesArray.map((movie) => movie.director);
-            //      const cleanList = rawList.filter((director, index) => rawList.indexOf(director) === index);
-            //      return cleanList;
-            //  }
+// Diego's solution:----------------------------------------------------------------------------
+//  function getAllDirectors(moviesArray) {
+//      const rawList = moviesArray.map((movie) => movie.director);
+//      const cleanList = rawList.filter((director, index) => rawList.indexOf(director) === index);
+//      return cleanList;
+//  }
 
 
 function getAllDirectors(moviesArray) {
@@ -16,10 +16,9 @@ function getAllDirectors(moviesArray) {
     let cleanList = [];
     if (directorsList == 0)
         return null;
-    for(let i = 0; i < directorsList.length; i++)
-    {
+    for (let i = 0; i < directorsList.length; i++) {
         if (!cleanList.includes(directorsList[i]))
-        cleanList.push(directorsList[i]);
+            cleanList.push(directorsList[i]);
     }
     return cleanList;
 }
@@ -33,7 +32,7 @@ function howManyMovies(moviesArray) {
     const steven = moviesArray.filter((movie) => movie.director === "Steven Spielberg");
     const stevenDrama = steven.filter((movie) => movie.genre.includes("Drama"));
     return stevenDrama.length;
- }
+}
 // console.log(howManyMovies(moviesArray))
 
 
@@ -41,7 +40,7 @@ function howManyMovies(moviesArray) {
 
 // Iteration 3: All scores average - Get the average of all scores with 2 decimals--------------------------------------------------------------------------------------------------------------------
 function scoresAverage(moviesArray) {
-    if(moviesArray == 0)
+    if (moviesArray == 0)
         return 0;
     const allScores = moviesArray.map((movie) => {
         if (!movie.score)
@@ -51,6 +50,7 @@ function scoresAverage(moviesArray) {
     const sumScore = allScores.reduce((previousValue, currentValue) => previousValue += currentValue);
     const averageScore = sumScore / allScores.length;
     return Math.round(averageScore * 100) / 100;
+    // return (parseFloat((sumScore/allScores.length).toFixed(2)))
 }
 //console.log(scoresAverage(moviesArray))
 
@@ -58,20 +58,35 @@ function scoresAverage(moviesArray) {
 
 // Iteration 4: Drama movies - Get the average of Drama Movies----------------------------------------------------------------------------------------------------------------------------------------
 function dramaMoviesScore(moviesArray) {
-    if(moviesArray == 0)
+    if (moviesArray == 0)
         return 0;
     const dramaMovies = moviesArray.filter((movie) => movie.genre.includes("Drama"));
-    if(dramaMovies.length == 0)
+    if (dramaMovies.length == 0)
         return 0;
     const allScores = dramaMovies.map((movie) => {
         if (!movie.score)
             movie.score = 0;
         return movie.score;
-    }); 
+    });
     const sumScore = allScores.reduce((previousValue, currentValue) => previousValue += currentValue);
     const averageScore = sumScore / allScores.length;
     return Math.round(averageScore * 100) / 100;
 }
+
+// Iteration 4: Drama movies - Get the average of Drama Movies
+// function dramaMoviesScore(moviesArray) {
+
+//     const allDrama = moviesArray.filter(movie =>{
+
+//         if(movie.genre.includes('Drama')) return movie.score;//filter
+//         if(!movie.genre.includes('Drama')) return 0;
+
+//     })
+
+//     return (scoresAverage(allDrama))
+// }
+
+
 //console.log(dramaMoviesScore(moviesArray))
 
 
@@ -81,9 +96,9 @@ function dramaMoviesScore(moviesArray) {
 function orderByYear(moviesArray) {
     const sortedArray = [...moviesArray];
     sortedArray.sort((a, b) => {
-        if(a.year < b.year)
+        if (a.year < b.year)
             return -1;
-        if(a.year > b.year)
+        if (a.year > b.year)
             return 1;
         if (a.title.toLowerCase() < b.title.toLowerCase())
             return -1;
@@ -92,7 +107,6 @@ function orderByYear(moviesArray) {
         else
             return 0;
     });
-    console.log(sortedArray[0])
     return sortedArray;
 }
 //console.log(orderByYear(moviesArray))
@@ -118,28 +132,69 @@ function orderAlphabetically(moviesArray) {
 
 
 // BONUS - Iteration 7: Time Format - Turn duration of the movies from hours to minutes---------------------------------------------------------------------------------------------------------------
-function turnHoursToMinutes(moviesArray) {
-    const minutesArray = [...moviesArray];
-   // const newArray = [];
-    minutesArray.forEach(movie => {
-        movie.duration = movie.duration.replace('min', ''); 
-        movie.duration = movie.duration.replace('h', '');
-        movie.duration = movie.duration.split(' ');
-        if (movie.duration.length == 1)
-            movie.duration = parseInt(movie.duration) * 60;
-        else
-            movie.duration = movie.duration.reduce((a, b) => parseInt(a) * 60 + parseInt(b));
-        console.log(movie.duration);
-      //  newArray.push(movie);
-        console.log(typeof minutesArray[0].duration);
+function turnHoursToMinutes2(moviesArray) {
+    const arrDur = moviesArray.map((movie) => {
+        return movie.duration;
     });
-    return minutesArray;
-    //return newArray;
 
+    for (let i = 0; i < arrDur.length; i++) {
+        arrDur[i].replace("h", "");
+        arrDur[i].replace("min", "");
+        const duration = arrDur[i].split(" "); 
+        let minutos = parseInt(duration[0]) * 60; 
+        if (duration[1])
+            minutos += parseInt(duration[1]);
+        arrDur[i] = minutos;
+    }
+
+    const newArr = moviesArray.map((movie, i) => {
+        return {
+            ...movie,
+            duration: arrDur[i],
+        };
+    });
+
+    return newArr;
 }
 
-turnHoursToMinutes(moviesArray)
+
+//console.log(turnHoursToMinutes(moviesArray)
 
 
 // BONUS - Iteration 8: Best yearly score average - Best yearly score average-------------------------------------------------------------------------------------------------------------------------
-function bestYearAvg(moviesArray) {}
+function bestYearAvg(moviesArray) {
+    if (moviesArray.length === 0) return null;
+    const arrYear = moviesArray.map((movie) => {
+        return movie.year;
+    });
+
+    const arrYearclean = [];
+    for (let i = 0; i < arrYear.length; i++) {
+        const element = arrYear[i];
+        if (!arrYearclean.includes(element)) arrYearclean.push(element);
+    }
+    let num = 0;
+    let index = 0;
+    for (let i = 0; i < arrYearclean.length; i++) {
+        const element = arrYearclean[i];
+        const filt = moviesArray.filter((movie) => {
+            if (movie.year === element) return true;
+        });
+
+        if (num === scoresAverage(filt)) {
+            if (arrYearclean[i] < arrYearclean[i - 1]) {
+                num = scoresAverage(filt);
+                index = i;
+            } else {
+                num = num;
+                index = i - 1;
+            }
+        }
+        if (num < scoresAverage(filt)) {
+            num = scoresAverage(filt);
+            index = i;
+        }
+    }
+
+    return `The best year was ${arrYearclean[index]} with an average score of ${num}`;
+}
